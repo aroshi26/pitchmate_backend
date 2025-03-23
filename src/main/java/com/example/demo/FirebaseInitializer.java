@@ -5,9 +5,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
-import java.io.FileInputStream;
-import java.io.IOException;
+
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Base64;
 
 @Component
 public class FirebaseInitializer {
@@ -15,18 +16,25 @@ public class FirebaseInitializer {
     @PostConstruct
     public void initialize() {
         try {
-            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("firebase-service-account.json");
+            String firebaseCredsBase64 = System.getenv("FIREBASE_CREDENTIALS_BASE64");
 
+            if (firebaseCredsBase64 == null || firebaseCredsBase64.isEmpty()) {
+                System.err.println("FIREBASE_CREDENTIALS_BASE64 environment variable is not set.");
+                return;
+            }
 
-            assert serviceAccount != null;
+            byte[] decodedBytes = Base64.getDecoder().decode(firebaseCredsBase64);
+            InputStream serviceAccountStream = new ByteArrayInputStream(decodedBytes);
+
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
+                System.out.println("Firebase has been initialized successfully!");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
