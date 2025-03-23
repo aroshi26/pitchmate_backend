@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/player-performances")
 public class PlayerPerformanceController {
 
     @Autowired
