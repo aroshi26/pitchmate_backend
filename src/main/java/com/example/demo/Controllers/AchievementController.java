@@ -6,6 +6,7 @@ import com.example.demo.Entities.Enum.AchievementTitle;
 import com.example.demo.Repositories.AchievementRepository;
 import com.example.demo.services.Interfaces.AchievementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/achievements")
 public class AchievementController {
 

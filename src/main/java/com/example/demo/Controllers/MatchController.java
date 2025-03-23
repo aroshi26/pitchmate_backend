@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/matches")
 public class MatchController {
 
@@ -95,7 +94,6 @@ public class MatchController {
         return ResponseEntity.ok(matches);
     }
 
-    @PreAuthorize("hasRole('ROLE_Coach') or hasRole('ROLE_Admin')")
     @GetMapping("/{matchId}")
     public ResponseEntity<?> getMatchDetails(@PathVariable Integer matchId) {
         Optional<Match> matchOpt = matchRepository.findById(matchId);
@@ -106,12 +104,12 @@ public class MatchController {
 
         Match match = matchOpt.get();
 
-        // ✅ Force Hibernate to initialize the assigned team
+        // ✅ Force Hibernate to initialize the assigned team if not null
         if (match.getAssignedTeam() != null) {
             Hibernate.initialize(match.getAssignedTeam());
         }
 
-        // ✅ Fetch and initialize players list
+        // ✅ Fetch and initialize players list, if the team is assigned
         List<Player> players = new ArrayList<>();
         if (match.getAssignedTeam() != null) {
             players = teamPlayerRepository.findByTeam(match.getAssignedTeam())
@@ -122,12 +120,22 @@ public class MatchController {
             players.forEach(Hibernate::initialize); // Ensure players are fully loaded
         }
 
-        // ✅ Return match, team, and players
-        return ResponseEntity.ok(Map.of(
-                "match", match,
-                "team", match.getAssignedTeam(),
-                "players", players
+        // ✅ Return match details even if the team is not assigned
+        Map<String, Object> response = new HashMap<>();
+        response.put("match", match);
+        response.put("team", match.getAssignedTeam() != null ? match.getAssignedTeam() : "No team assigned yet");
+        response.put("players", players.isEmpty() ? "No players assigned to this match" : players);
+
+        // ✅ Return match, venue, opponent, and other details
+        response.put("matchDetails", Map.of(
+                "matchType", match.getMatchType(),
+                "opponentTeam", match.getOpponentTeam(),
+                "matchLocation", match.getMatchLocation(),
+                "matchDate", match.getMatchDate(),
+                "opponentTeamStrength", match.getOpponentTeamStrength()
         ));
+
+        return ResponseEntity.ok(response);
     }
 
 

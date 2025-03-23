@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 import com.example.demo.Repositories.AdminStaffRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Value("${front_end_url}")
+    private String front_end_url;
+
     private final AdminStaffRepository adminStaffRepository;
 
     public SecurityConfig(AdminStaffRepository adminStaffRepository) {
@@ -30,7 +34,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     var config = new org.springframework.web.cors.CorsConfiguration();
                     config.setAllowCredentials(true);
-                    config.addAllowedOrigin("http://localhost:5173"); // Ensure frontend origin is added
+                    config.addAllowedOrigin(front_end_url); // Ensure frontend origin is added
                     config.addAllowedMethod("*");  // Allow all HTTP methods
                     config.addAllowedHeader("*");  // Allow all headers
                     return config;

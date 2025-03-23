@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/players")
-@CrossOrigin(origins = "http://localhost:5173") // ✅ Ensure frontend access
 
 public class PlayerController {
 
