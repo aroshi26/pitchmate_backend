@@ -8,6 +8,8 @@ import com.example.demo.dto.PlayerAggregatedStats;
 import com.example.demo.services.Interfaces.PlayerPerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,7 @@ public class PlayerPerformanceServiceImpl implements PlayerPerformanceService {
     public PlayerPerformance createPlayerPerformance(PlayerPerformance performance) {
         return playerPerformanceRepository.save(performance);
     }
+    @Transactional
     @Override
     public PlayerPerformance updatePlayerPerformance(PlayerPerformanceId id, PlayerPerformance newPerformance) {
         Optional<PlayerPerformance> existingPerformanceOpt = playerPerformanceRepository.findById(id);
