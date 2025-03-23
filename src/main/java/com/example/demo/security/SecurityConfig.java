@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/feedback").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
                         .requestMatchers(HttpMethod.GET, "/api/feedback").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
                         .requestMatchers(HttpMethod.POST, "/api/player-performance/**").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
-                        .requestMatchers(HttpMethod.PUT, "/api/player-performance/**").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
+                        .requestMatchers(HttpMethod.PUT, "/api/player-performance/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/player-performance/**").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
                         .requestMatchers(HttpMethod.POST, "/api/achievements").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
                         .requestMatchers(HttpMethod.GET, "/api/achievements").hasAnyAuthority("ROLE_Admin", "ROLE_Coach")
